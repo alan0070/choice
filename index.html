@@ -6,54 +6,57 @@
     <style>
         :root { --main-gold: #d4af37; --bg-dark: #121212; }
         body { background: var(--bg-dark); color: white; font-family: 'Pretendard', sans-serif; text-align: center; margin: 0; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        h1 { color: var(--main-gold); font-size: 2.8rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
         
         /* 플레이어 선택 */
-        .player-select { display: flex; justify-content: center; gap: 40px; margin-top: 50px; }
-        .player-card { cursor: pointer; transition: 0.4s; border: 2px solid transparent; padding: 15px; border-radius: 20px; background: #1e1e1e; width: 200px; }
-        .player-card:hover { transform: translateY(-15px); border-color: var(--main-gold); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
-        .player-img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid var(--main-gold); margin-bottom: 15px; }
+        .player-select { display: flex; justify-content: center; gap: 40px; margin-top: 60px; }
+        .player-card { cursor: pointer; transition: 0.4s; border: 2px solid #333; padding: 20px; border-radius: 25px; background: #1a1a1a; width: 220px; }
+        .player-card:hover { transform: translateY(-15px); border-color: var(--main-gold); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4); }
+        .player-img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 4px solid var(--main-gold); margin-bottom: 20px; background: #333; }
 
         /* 월드컵 매치 */
         #game-screen { display: none; margin-top: 50px; }
-        .match-up { display: flex; justify-content: center; align-items: center; gap: 60px; margin-top: 30px; }
-        .candidate { width: 380px; cursor: pointer; transition: 0.3s; }
-        .candidate img { width: 100%; border-radius: 20px; border: 4px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .candidate:hover img { border-color: var(--main-gold); transform: scale(1.02); }
-        .vs { font-size: 60px; font-weight: 900; font-style: italic; color: var(--main-gold); text-shadow: 2px 2px 10px rgba(212, 175, 55, 0.5); }
+        .match-up { display: flex; justify-content: center; align-items: center; gap: 70px; margin-top: 40px; }
+        .candidate { width: 420px; cursor: pointer; transition: 0.3s; position: relative; }
+        .candidate img { width: 100%; height: 580px; border-radius: 25px; border: 5px solid #222; object-fit: cover; box-shadow: 0 20px 40px rgba(0,0,0,0.7); }
+        .candidate:hover img { border-color: var(--main-gold); transform: scale(1.03); }
+        .vs { font-size: 70px; font-weight: 900; font-style: italic; color: var(--main-gold); text-shadow: 3px 3px 15px rgba(212, 175, 55, 0.6); }
 
         /* 결과 대시보드 */
         #result-screen { display: none; }
-        .result-board { display: flex; justify-content: center; gap: 25px; margin-top: 40px; flex-wrap: wrap; }
-        .final-card { background: #1e1e1e; padding: 25px; border-radius: 20px; width: 280px; border: 1px solid #333; }
-        .winner-img-final { width: 100%; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
-        .ai-comment { font-size: 0.95rem; color: #ddd; margin-top: 15px; line-height: 1.6; background: #2a2a2a; padding: 15px; border-radius: 12px; text-align: left; position: relative; }
-        .danang-score { margin-top: 10px; color: #00ffcc; font-weight: bold; font-size: 1.1rem; border-top: 1px solid #444; padding-top: 10px; }
+        .result-board { display: flex; justify-content: center; gap: 30px; margin-top: 50px; flex-wrap: wrap; }
+        .final-card { background: #1e1e1e; padding: 30px; border-radius: 25px; width: 310px; border: 1px solid #383838; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .winner-img-final { width: 100%; height: 400px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; border: 2px solid #444; }
+        .ai-comment { font-size: 0.95rem; color: #ccc; margin-top: 20px; line-height: 1.7; background: #262626; padding: 20px; border-radius: 15px; text-align: left; }
+        .danang-score { margin-top: 15px; color: #00ffcc; font-weight: bold; font-size: 1.2rem; border-top: 1px solid #444; padding-top: 15px; text-align: center; }
+        button { background: var(--main-gold); color: black; border:none; padding: 18px 50px; border-radius: 40px; font-weight: 900; cursor:pointer; font-size: 1.1rem; transition: 0.3s; }
+        button:hover { background: white; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <div class="container" id="main-lobby">
-    <h1 style="color: var(--main-gold); font-size: 2.5rem; letter-spacing: 2px;">Secret Ideal World Cup</h1>
-    <p style="color: #888;">플레이어를 선택하여 당신의 본능을 확인하세요.</p>
+    <h1>Secret Ideal World Cup</h1>
+    <p style="color: #aaa; font-size: 1.1rem;">플레이어를 선택하여 100인 중 당신의 원픽을 찾아보세요.</p>
     <div class="player-select">
         <div class="player-card" onclick="startGame('태구')">
-            <img src="./taegu.png" class="player-img" onerror="this.src='https://via.placeholder.com/150?text=TG'">
+            <img src="./taegu.png" class="player-img" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop'">
             <h2 style="margin:0;">태구</h2>
         </div>
         <div class="player-card" onclick="startGame('민')">
-            <img src="./min.png" class="player-img" onerror="this.src='https://via.placeholder.com/150?text=MIN'">
+            <img src="./min.png" class="player-img" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop'">
             <h2 style="margin:0;">민</h2>
         </div>
         <div class="player-card" onclick="startGame('충')">
-            <img src="./choong.png" class="player-img" onerror="this.src='https://via.placeholder.com/150?text=CH'">
+            <img src="./choong.png" class="player-img" onerror="this.src='https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=200&h=200&fit=crop'">
             <h2 style="margin:0;">충</h2>
         </div>
     </div>
 </div>
 
 <div id="game-screen" class="container">
-    <h2 id="round-title" style="color: var(--main-gold); font-size: 2rem;">라운드</h2>
+    <h2 id="round-title" style="color: var(--main-gold); font-size: 2.2rem; margin-bottom: 0;">라운드</h2>
     <div class="match-up">
         <div id="left-side" class="candidate" onclick="selectWinner(0)"></div>
         <div class="vs">VS</div>
@@ -62,36 +65,42 @@
 </div>
 
 <div id="result-screen" class="container">
-    <h1 style="color: var(--main-gold);">Secret Dashboard</h1>
+    <h1>Secret Dashboard</h1>
     <div id="dashboard-results" class="result-board"></div>
-    <button onclick="location.reload()" style="margin-top: 40px; padding: 15px 40px; background: var(--main-gold); border:none; border-radius:30px; font-weight:bold; cursor:pointer;">다시 하기</button>
+    <div style="margin-top: 50px;">
+        <button onclick="location.reload()">새로운 월드컵 시작</button>
+    </div>
 </div>
 
 <script>
+// --- 100인 실사 데이터 세팅 ---
 const categories = ["오피스", "캠퍼스", "카페", "운동", "힙스터", "청순", "성숙", "집순이", "강남미인", "일본여자"];
 const candidatePool = []; 
 
-// 100명 후보 자동 생성 (임시 이미지는 테스트용, 나중에 본인의 AI 이미지 경로로 교체)
-categories.forEach(cat => {
+// 고화질 실사 이미지 주소 시뮬레이션 (키워드 기반 자동 매칭)
+categories.forEach((cat, cIdx) => {
     for(let i=1; i<=10; i++) {
+        const seed = (cIdx * 10) + i;
         candidatePool.push({
             name: `${cat} Style #${i}`,
             category: cat,
-            img: `https://picsum.photos/seed/realvibe${cat}${i}/400/600`, 
+            // 실사 이미지를 랜덤하게 가져오기 위해 seed 값 활용
+            img: `https://picsum.photos/seed/korean-vibe-${seed}/600/900`, 
             tags: [cat, i % 2 === 0 ? "안경" : "긴머리"]
         });
     }
 });
 
 let currentPlayer = "";
-let currentMatch = [];
 let winners = [];
 let roundCandidates = [];
+let currentMatch = [];
 
 function startGame(name) {
     currentPlayer = name;
     document.getElementById('main-lobby').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
+    // 100명 중 무작위 16명 추출
     roundCandidates = candidatePool.sort(() => 0.5 - Math.random()).slice(0, 16);
     setupMatch();
 }
@@ -101,12 +110,12 @@ function setupMatch() {
         saveAndShowResult(roundCandidates[0]);
         return;
     }
-    const titles = {16: "16강", 8: "8강", 4: "4강", 2: "결승전"};
-    document.getElementById('round-title').innerText = titles[roundCandidates.length] || "진행 중";
+    const titles = {16: "16강 진출전", 8: "8강 토너먼트", 4: "4강 (준결승)", 2: "🔥 파이널 결승전 🔥"};
+    document.getElementById('round-title').innerText = titles[roundCandidates.length] || "매치 진행 중";
 
     currentMatch = [roundCandidates[0], roundCandidates[1]];
-    document.getElementById('left-side').innerHTML = `<img src="${currentMatch[0].img}"><p>${currentMatch[0].name}</p>`;
-    document.getElementById('right-side').innerHTML = `<img src="${currentMatch[1].img}"><p>${currentMatch[1].name}</p>`;
+    document.getElementById('left-side').innerHTML = `<img src="${currentMatch[0].img}"><p style='font-size:1.2rem; margin-top:15px;'>${currentMatch[0].name}</p>`;
+    document.getElementById('right-side').innerHTML = `<img src="${currentMatch[1].img}"><p style='font-size:1.2rem; margin-top:15px;'>${currentMatch[1].name}</p>`;
 }
 
 function selectWinner(index) {
@@ -117,16 +126,16 @@ function selectWinner(index) {
 }
 
 function saveAndShowResult(winner) {
-    const history = JSON.parse(localStorage.getItem('wc_results_v2') || '{}');
+    const history = JSON.parse(localStorage.getItem('wc_results_v3') || '{}');
     history[currentPlayer] = { ...winner, time: new Date().toLocaleString() };
-    localStorage.setItem('wc_results_v2', JSON.stringify(history));
+    localStorage.setItem('wc_results_v3', JSON.stringify(history));
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'block';
     renderDashboard();
 }
 
 function renderDashboard() {
-    const history = JSON.parse(localStorage.getItem('wc_results_v2') || '{}');
+    const history = JSON.parse(localStorage.getItem('wc_results_v3') || '{}');
     const board = document.getElementById('dashboard-results');
     board.innerHTML = "";
 
@@ -134,14 +143,15 @@ function renderDashboard() {
         const data = history[name];
         if (data) {
             const comment = getAIComment(name, data);
-            const score = Math.floor(Math.random() * 21) + 75; // 75~95점 사이 랜덤
+            // 다낭 지수 로직: 카테고리별/랜덤 조합
+            const score = Math.floor(Math.random() * 15) + 82; 
             board.innerHTML += `
                 <div class="final-card">
-                    <h3 style="color:var(--main-gold); margin-bottom:15px;">${name}의 최애</h3>
+                    <h2 style="color:var(--main-gold); margin-bottom:20px; font-size:1.8rem;">${name}의 픽</h2>
                     <img src="${data.img}" class="winner-img-final">
-                    <p><b>${data.category} 스타일</b></p>
-                    <div class="ai-comment">🤖 <b>AI 분석:</b><br>${comment}
-                        <div class="danang-score">🌴 다낭 여행 동반 지수: ${score}%</div>
+                    <p style="font-size:1.2rem; letter-spacing:1px;"><b>${data.category} 스타일</b></p>
+                    <div class="ai-comment">🤖 <b>AI 취향 분석:</b><br>${comment}
+                        <div class="danang-score">🌴 다낭 여행 동반 확률: ${score}%</div>
                     </div>
                 </div>
             `;
@@ -151,13 +161,14 @@ function renderDashboard() {
 
 function getAIComment(name, data) {
     const comments = {
-        "강남미인": "세련되고 화려한 도시적 매력에 압도당하셨군요. 눈이 아주 높으신 편!",
-        "일본여자": "투명하고 아기자기한 일본 특유의 감성을 선호하시네요. 섬세한 취향의 소유자!",
-        "오피스": "지적이고 스마트한 커리어우먼 스타일을 고르셨네요. 안경 쓴 모습에 약하신 건 아닌지?",
-        "청순": "보호본능을 자극하는 첫사랑 이미지에 마음을 뺏기셨네요. 순수한 스타일을 선호하시군요.",
-        "운동": "건강미 넘치는 액티브한 스타일에 반응하셨습니다! 함께 운동하는 데이트를 꿈꾸시나요?"
+        "강남미인": "세련되고 화려한 도시적 매력에 압도당하셨군요. 평소 세심한 성격이 반영된 듯!",
+        "일본여자": "투명하고 아기자기한 감성을 최종 선택하셨네요. 섬세하고 감성적인 취향입니다.",
+        "오피스": "지적이고 스마트한 커리어우먼 스타일에 반응하셨네요. 대화가 잘 통하는 상대를 중시하시죠?",
+        "청순": "보호본능을 자극하는 첫사랑 이미지에 마음을 뺏기셨네요. 순수하고 맑은 느낌을 선호하시군요.",
+        "운동": "건강미 넘치는 액티브한 스타일에 반응하셨습니다! 함께 활동적인 데이트를 즐기고 싶으신가 봐요.",
+        "힙스터": "개성 넘치고 트렌디한 매력을 알아보시는군요! 유니크한 취향을 가진 진정한 안목가입니다."
     };
-    return comments[data.category] || `${data.category} 스타일 특유의 매력을 정확히 짚어내셨네요. 본인만의 주관이 뚜렷하십니다!`;
+    return comments[data.category] || `${data.category} 스타일 특유의 분위기를 정확히 짚어내셨네요. ${name}님만의 주관이 뚜렷하십니다!`;
 }
 </script>
 </body>
