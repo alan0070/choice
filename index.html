@@ -22,7 +22,7 @@
         .candidate:hover img { border-color: var(--main-gold); transform: scale(1.03); }
         .vs { font-size: 70px; font-weight: 900; font-style: italic; color: var(--main-gold); text-shadow: 3px 3px 15px rgba(212, 175, 55, 0.6); }
 
-        .back-btn { margin-top: 40px; background: transparent; border: 1px solid #555; color: #888; padding: 10px 25px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .back-btn { margin-top: 40px; background: transparent; border: 1px solid #555; color: #888; padding: 10px 25px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-weight: bold; }
         .back-btn:hover { border-color: var(--main-gold); color: var(--main-gold); }
 
         #result-screen { display: none; }
@@ -38,18 +38,18 @@
 
 <div class="container" id="main-lobby">
     <h1>Secret Ideal World Cup</h1>
-    <p style="color: #aaa; font-size: 1.1rem;">태구, 민, 충 중 플레이어를 선택하세요.</p>
+    <p style="color: #aaa; font-size: 1.1rem;">플레이어를 선택하여 100인 중 당신의 픽을 찾아보세요.</p>
     <div class="player-select">
         <div class="player-card" onclick="startGame('태구')">
-            <div class="profile-img-container"><img src="./taegu.png" class="player-img" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop'"></div>
+            <div class="profile-img-container"><img src="./taegu.png" class="player-img" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=taegu'"></div>
             <h2 style="margin:0;">태구</h2>
         </div>
         <div class="player-card" onclick="startGame('민')">
-            <div class="profile-img-container"><img src="./min.png" class="player-img" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop'"></div>
+            <div class="profile-img-container"><img src="./min.png" class="player-img" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=min'"></div>
             <h2 style="margin:0;">민</h2>
         </div>
         <div class="player-card" onclick="startGame('충')">
-            <div class="profile-img-container"><img src="./choong.png" class="player-img" onerror="this.src='https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=200&h=200&fit=crop'"></div>
+            <div class="profile-img-container"><img src="./choong.png" class="player-img" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=choong'"></div>
             <h2 style="margin:0;">충</h2>
         </div>
     </div>
@@ -62,42 +62,38 @@
         <div class="vs">VS</div>
         <div id="right-side" class="candidate" onclick="selectWinner(1)"></div>
     </div>
-    <button class="back-btn" id="undo-btn" onclick="undoSelection()" style="display:none;">선택 취소 (뒤로가기)</button>
+    <button class="back-btn" id="undo-btn" onclick="undoSelection()" style="display:none;">이전 선택 취소 (뒤로가기)</button>
 </div>
 
 <div id="result-screen" class="container">
     <h1>Secret Dashboard</h1>
     <div id="dashboard-results" class="result-board"></div>
-    <div style="margin-top: 50px;"><button class="action-btn" onclick="location.reload()">다시 하기</button></div>
+    <div style="margin-top: 50px;"><button class="action-btn" onclick="location.reload()">새로운 월드컵 시작</button></div>
 </div>
 
 <script>
-// --- 🔥 풍경 0% 보장! 엄선된 100인 고화질 인물 이미지 데이터 ---
+// --- 🏆 인물이 확실히 보장되는 엄선된 이미지 ID 리스트 ---
+const portraits = [
+    "1534528741775-53994a69daeb", "1544005313-94ddf0286df2", "1506794778202-cad84cf45f1d", "1531746020798-e6953c6e8e04",
+    "1524504388940-b1c1722653e1", "1517841905240-472988babdf9", "1438761681033-6461ffad8d80", "1494790108377-be9c29b29330",
+    "1488426862026-3ee34a7d66df", "1539571696357-5a69c17a67c6", "1519345182560-3f2917c472ef", "1509305713942-83601abc8f85",
+    "1529626455594-215017963df5", "1508214751196-bcfd4ca60f91", "1499952127939-9bbf5af6c51c", "1520813792240-56fc4a3765a7",
+    "1530577195663-f2796938bb91", "1515886657617-aa3ed8955a4f", "1491349171157-c9d5227d996a", "1463175059582-3813b89bb0b2",
+    "1525134479668-1bee5c7c6845", "1517070208541-250c20772747", "1524250502761-1ac6f2e30d43", "1514315384763-ba401779410f"
+];
+
 const categories = ["오피스", "캠퍼스", "카페", "운동", "힙스터", "청순", "성숙", "집순이", "강남미인", "일본여자"];
 const candidatePool = []; 
 
-// 100명의 인물 이미지가 확실히 로딩되는 고유 ID 셋업 (테스트 완료)
+// 100인 데이터 생성 (엄선된 포트레이트 ID 반복 활용)
 for(let i=0; i<100; i++) {
-    const catIndex = Math.floor(i / 10);
-    const cat = categories[catIndex];
-    // 사람 얼굴이 확실히 나오는 ID 범위 (unsplash 소스 활용)
-    const portraitIds = [
-        "1494790108377-be9c29b29330", "1534528741775-53994a69daeb", "1507003211169-0a1dd7228f2d", "1544005313-94ddf0286df2",
-        "1506794778202-cad84cf45f1d", "1531746020798-e6953c6e8e04", "1524504388940-b1c1722653e1", "1517841905240-472988babdf9",
-        "1438761681033-6461ffad8d80", "1500648767791-00dcc994a43e", "1494790108377-be9c29b29330", "1488426862026-3ee34a7d66df",
-        "1539571696357-5a69c17a67c6", "1519345182560-3f2917c472ef", "1492562080023-ab3db95bfbce", "1509305713942-83601abc8f85"
-    ];
-    // 위의 ID 리스트가 모자랄 경우를 대비해 인물 키워드(Face, Portrait) 고정 소스 사용
-    const finalImg = `https://images.unsplash.com/photo-${portraitIds[i % portraitIds.length]}?w=600&h=900&fit=crop&q=80`;
-    
-    // 더 확실한 대안 (인물 전문 검색 API 조합)
-    const personImg = `https://loremflickr.com/600/900/girl,woman,face,portrait/all?lock=${i}`;
-
+    const portraitId = portraits[i % portraits.length];
+    const cat = categories[Math.floor(i / 10)];
     candidatePool.push({
         id: i,
         name: `${cat} Style #${(i%10)+1}`,
         category: cat,
-        img: personImg, // 🚨 고유 ID 기반 로딩 보장
+        img: `https://images.unsplash.com/photo-${portraitId}?w=600&h=900&fit=crop&q=80`,
         tags: [cat]
     });
 }
@@ -151,46 +147,6 @@ function undoSelection() {
 }
 
 function saveAndShowResult(winner) {
-    const history = JSON.parse(localStorage.getItem('wc_results_final_secure') || '{}');
+    const history = JSON.parse(localStorage.getItem('wc_results_final_fixed_100') || '{}');
     history[currentPlayer] = { ...winner, time: new Date().toLocaleString() };
-    localStorage.setItem('wc_results_final_secure', JSON.stringify(history));
-    document.getElementById('game-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
-    renderDashboard();
-}
-
-function renderDashboard() {
-    const history = JSON.parse(localStorage.getItem('wc_results_final_secure') || '{}');
-    const board = document.getElementById('dashboard-results');
-    board.innerHTML = "";
-    ["태구", "민", "충"].forEach(name => {
-        const data = history[name];
-        if (data) {
-            const score = Math.floor(Math.random() * 15) + 82; 
-            board.innerHTML += `
-                <div class="final-card">
-                    <h2 style="color:var(--main-gold);">${name}의 픽</h2>
-                    <img src="${data.img}" class="winner-img-final">
-                    <p><b>${data.category} 스타일</b></p>
-                    <div class="ai-comment">🤖 <b>AI 분석:</b> ${getAIComment(name, data)}
-                        <div class="danang-score">🌴 다낭 여행 동반 확률: ${score}%</div>
-                    </div>
-                </div>
-            `;
-        }
-    });
-}
-
-function getAIComment(name, data) {
-    const comments = {
-        "강남미인": "세련되고 화려한 매력에 압도당하셨군요!",
-        "일본여자": "투명한 일본 특유의 감성을 선호하시네요.",
-        "오피스": "지적이고 스마트한 상대를 중시하시는군요.",
-        "청순": "순수하고 맑은 느낌을 선호하시는 첫사랑 취향!",
-        "운동": "함께 활동적인 데이트를 즐기고 싶은 건강미 취향!"
-    };
-    return comments[data.category] || `${data.category} 스타일을 정확히 짚어내셨네요!`;
-}
-</script>
-</body>
-</html>
+    localStorage.setItem('wc_results_final_fixed_100', JSON.stringify(
