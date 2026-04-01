@@ -12,7 +12,6 @@
         .player-select { display: flex; justify-content: center; gap: 40px; margin-top: 60px; }
         .player-card { cursor: pointer; transition: 0.4s; border: 2px solid #333; padding: 20px; border-radius: 25px; background: #1a1a1a; width: 220px; }
         .player-card:hover { transform: translateY(-15px); border-color: var(--main-gold); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4); }
-        /* profile-img는 무조건 보이게 세팅 */
         .profile-img-container { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--main-gold); margin: 0 auto 20px auto; background: #333; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .player-img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -23,13 +22,16 @@
         .candidate:hover img { border-color: var(--main-gold); transform: scale(1.03); }
         .vs { font-size: 70px; font-weight: 900; font-style: italic; color: var(--main-gold); text-shadow: 3px 3px 15px rgba(212, 175, 55, 0.6); }
 
+        .back-btn { margin-top: 40px; background: transparent; border: 1px solid #555; color: #888; padding: 10px 25px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .back-btn:hover { border-color: var(--main-gold); color: var(--main-gold); }
+
         #result-screen { display: none; }
         .result-board { display: flex; justify-content: center; gap: 30px; margin-top: 50px; flex-wrap: wrap; }
         .final-card { background: #1e1e1e; padding: 30px; border-radius: 25px; width: 310px; border: 1px solid #383838; }
         .winner-img-final { width: 100%; height: 400px; object-fit: cover; border-radius: 15px; margin-bottom: 20px; border: 2px solid #444; }
         .ai-comment { font-size: 0.95rem; color: #ccc; margin-top: 20px; line-height: 1.7; background: #262626; padding: 20px; border-radius: 15px; text-align: left; }
         .danang-score { margin-top: 15px; color: #00ffcc; font-weight: bold; font-size: 1.2rem; border-top: 1px solid #444; padding-top: 15px; text-align: center; }
-        button { background: var(--main-gold); color: black; border:none; padding: 18px 50px; border-radius: 40px; font-weight: 900; cursor:pointer; font-size: 1.1rem; transition: 0.3s; }
+        .action-btn { background: var(--main-gold); color: black; border:none; padding: 18px 50px; border-radius: 40px; font-weight: 900; cursor:pointer; font-size: 1.1rem; transition: 0.3s; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -39,15 +41,15 @@
     <p style="color: #aaa; font-size: 1.1rem;">태구, 민, 충 중 플레이어를 선택하세요.</p>
     <div class="player-select">
         <div class="player-card" onclick="startGame('태구')">
-            <div class="profile-img-container"><img src="./taegu.png" class="player-img"></div>
+            <div class="profile-img-container"><img src="./taegu.png" class="player-img" onerror="this.parentElement.style.background='#555'"></div>
             <h2 style="margin:0;">태구</h2>
         </div>
         <div class="player-card" onclick="startGame('민')">
-            <div class="profile-img-container"><img src="./min.png" class="player-img"></div>
+            <div class="profile-img-container"><img src="./min.png" class="player-img" onerror="this.parentElement.style.background='#555'"></div>
             <h2 style="margin:0;">민</h2>
         </div>
         <div class="player-card" onclick="startGame('충')">
-            <div class="profile-img-container"><img src="./choong.png" class="player-img"></div>
+            <div class="profile-img-container"><img src="./choong.png" class="player-img" onerror="this.parentElement.style.background='#555'"></div>
             <h2 style="margin:0;">충</h2>
         </div>
     </div>
@@ -60,32 +62,30 @@
         <div class="vs">VS</div>
         <div id="right-side" class="candidate" onclick="selectWinner(1)"></div>
     </div>
+    <button class="back-btn" id="undo-btn" onclick="undoSelection()" style="display:none;">이전 단계로 되돌리기 (뒤로가기)</button>
 </div>
 
 <div id="result-screen" class="container">
     <h1>Secret Dashboard</h1>
     <div id="dashboard-results" class="result-board"></div>
-    <div style="margin-top: 50px;"><button onclick="location.reload()">다시 하기</button></div>
+    <div style="margin-top: 50px;"><button class="action-btn" onclick="location.reload()">새로운 월드컵 시작</button></div>
 </div>
 
 <script>
-// --- 🏆 이미지 로딩 100% 보장되는 확실한 미녀 라인업 엔진 ---
 const categories = ["오피스", "캠퍼스", "카페", "운동", "힙스터", "청순", "성숙", "집순이", "강남미인", "일본여자"];
 const candidatePool = []; 
 
+// 이미지 안정성을 위해 다른 API 활용
 categories.forEach((cat, cIdx) => {
     for(let i=1; i<=10; i++) {
         const seed = (cIdx * 10) + i;
-        
-        // 🚨 외부 랜덤 주소 대신, 이미 호스팅된 확실한 실사 이미지 URL 사용 (예시 주소)
-        // 실제 운영시엔 본인이 생성한 고퀄리티 이미지 호스팅 주소로!
-        // 이 주소는 테스트용으로 Unsplash의 고해상도 인물 사진을 랜덤하게 불러옵니다.
-        const imageUrl = `https://source.unsplash.com/featured/?korean,woman,${cat},${seed}`;
-        
         candidatePool.push({
+            id: seed,
             name: `${cat} Style #${i}`,
             category: cat,
-            img: imageUrl, 
+            img: `https://images.unsplash.com/photo-${1500000000000 + (seed * 12345)}?w=600&h=900&fit=crop&q=80`, 
+            // 🚨 Unsplash 랜덤 키워드 대신 고유 ID 방식으로 매칭 (로딩 보장)
+            img: `https://picsum.photos/id/${10 + seed}/600/900`,
             tags: [cat]
         });
     }
@@ -95,23 +95,33 @@ let currentPlayer = "";
 let winners = [];
 let roundCandidates = [];
 let currentMatch = [];
+let historyStack = []; // 뒤로가기를 위한 저장소
 
 function startGame(name) {
     currentPlayer = name;
     document.getElementById('main-lobby').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
-    // 100명 중 무작위 16명 추출
     roundCandidates = candidatePool.sort(() => 0.5 - Math.random()).slice(0, 16);
+    historyStack = [];
     setupMatch();
 }
 
 function setupMatch() {
-    if (roundCandidates.length === 1) {
+    if (roundCandidates.length === 1 && winners.length === 0) {
         saveAndShowResult(roundCandidates[0]);
         return;
     }
+    
+    // 라운드 바뀔 때 처리
+    if (roundCandidates.length === 0 && winners.length > 0) {
+        roundCandidates = [...winners];
+        winners = [];
+    }
+
     const titles = {16: "16강 진출전", 8: "8강 토너먼트", 4: "4강 (준결승)", 2: "🔥 파이널 결승전 🔥"};
     document.getElementById('round-title').innerText = titles[roundCandidates.length] || "매치 진행 중";
+    
+    document.getElementById('undo-btn').style.display = historyStack.length > 0 ? "inline-block" : "none";
 
     currentMatch = [roundCandidates[0], roundCandidates[1]];
     document.getElementById('left-side').innerHTML = `<img src="${currentMatch[0].img}"><p style='font-size:1.2rem; margin-top:15px;'>${currentMatch[0].name}</p>`;
@@ -119,11 +129,69 @@ function setupMatch() {
 }
 
 function selectWinner(index) {
+    // 현재 상태를 히스토리에 저장 (깊은 복사)
+    historyStack.push({
+        roundCandidates: [...roundCandidates],
+        winners: [...winners]
+    });
+
     winners.push(currentMatch[index]);
     roundCandidates.splice(0, 2);
-    if (roundCandidates.length === 0) { roundCandidates = winners; winners = []; }
+    
+    setupMatch();
+}
+
+function undoSelection() {
+    if (historyStack.length === 0) return;
+    
+    const lastState = historyStack.pop();
+    roundCandidates = lastState.roundCandidates;
+    winners = lastState.winners;
+    
     setupMatch();
 }
 
 function saveAndShowResult(winner) {
-    const history = JSON.parse(localStorage.getItem('wc_results_vfinal') || '{}');
+    const history = JSON.parse(localStorage.getItem('wc_results_vfinal_fix') || '{}');
+    history[currentPlayer] = { ...winner, time: new Date().toLocaleString() };
+    localStorage.setItem('wc_results_vfinal_fix', JSON.stringify(history));
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    renderDashboard();
+}
+
+function renderDashboard() {
+    const history = JSON.parse(localStorage.getItem('wc_results_vfinal_fix') || '{}');
+    const board = document.getElementById('dashboard-results');
+    board.innerHTML = "";
+    ["태구", "민", "충"].forEach(name => {
+        const data = history[name];
+        if (data) {
+            const score = Math.floor(Math.random() * 15) + 82; 
+            board.innerHTML += `
+                <div class="final-card">
+                    <h2 style="color:var(--main-gold);">${name}의 최애</h2>
+                    <img src="${data.img}" class="winner-img-final">
+                    <p><b>${data.category} 스타일</b></p>
+                    <div class="ai-comment">🤖 <b>AI 분석:</b> ${getAIComment(name, data)}
+                        <div class="danang-score">🌴 다낭 여행 동반 확률: ${score}%</div>
+                    </div>
+                </div>
+            `;
+        }
+    });
+}
+
+function getAIComment(name, data) {
+    const comments = {
+        "강남미인": "세련되고 화려한 매력에 압도당하셨군요!",
+        "일본여자": "투명한 일본 특유의 감성을 선호하시네요.",
+        "오피스": "지적이고 스마트한 상대를 중시하시는군요.",
+        "청순": "순수하고 맑은 느낌을 선호하시는 첫사랑 취향!",
+        "운동": "함께 활동적인 데이트를 즐기고 싶은 건강미 취향!"
+    };
+    return comments[data.category] || `${data.category} 스타일을 정확히 짚어내셨네요!`;
+}
+</script>
+</body>
+</html>
