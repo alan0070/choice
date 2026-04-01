@@ -38,25 +38,25 @@
 
 <div class="container" id="main-lobby">
     <h1>Secret Ideal World Cup</h1>
-    <p style="color: #aaa; font-size: 1.1rem;">플레이어를 선택하여 100인 중 당신의 픽을 찾아보세요.</p>
+    <p style="color: #aaa;">플레이어를 선택하여 100인 중 원픽을 찾으세요.</p>
     <div class="player-select">
         <div class="player-card" onclick="startGame('태구')">
-            <div class="profile-img-container"><img src="./taegu.png" class="player-img" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=taegu'"></div>
-            <h2 style="margin:0;">태구</h2>
+            <div class="profile-img-container"><img src="./taegu.png" class="player-img" onerror="this.src='https://ui-avatars.com/api/?name=TG&background=d4af37&color=fff'"></div>
+            <h2>태구</h2>
         </div>
         <div class="player-card" onclick="startGame('민')">
-            <div class="profile-img-container"><img src="./min.png" class="player-img" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=min'"></div>
-            <h2 style="margin:0;">민</h2>
+            <div class="profile-img-container"><img src="./min.png" class="player-img" onerror="this.src='https://ui-avatars.com/api/?name=MIN&background=d4af37&color=fff'"></div>
+            <h2>민</h2>
         </div>
         <div class="player-card" onclick="startGame('충')">
-            <div class="profile-img-container"><img src="./choong.png" class="player-img" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=choong'"></div>
-            <h2 style="margin:0;">충</h2>
+            <div class="profile-img-container"><img src="./choong.png" class="player-img" onerror="this.src='https://ui-avatars.com/api/?name=CH&background=d4af37&color=fff'"></div>
+            <h2>충</h2>
         </div>
     </div>
 </div>
 
 <div id="game-screen" class="container">
-    <h2 id="round-title" style="color: var(--main-gold); font-size: 2.2rem; margin-bottom: 0;">라운드</h2>
+    <h2 id="round-title" style="color: var(--main-gold); font-size: 2.2rem;">라운드</h2>
     <div class="match-up">
         <div id="left-side" class="candidate" onclick="selectWinner(0)"></div>
         <div class="vs">VS</div>
@@ -72,29 +72,19 @@
 </div>
 
 <script>
-// --- 🏆 인물이 확실히 보장되는 엄선된 이미지 ID 리스트 ---
-const portraits = [
-    "1534528741775-53994a69daeb", "1544005313-94ddf0286df2", "1506794778202-cad84cf45f1d", "1531746020798-e6953c6e8e04",
-    "1524504388940-b1c1722653e1", "1517841905240-472988babdf9", "1438761681033-6461ffad8d80", "1494790108377-be9c29b29330",
-    "1488426862026-3ee34a7d66df", "1539571696357-5a69c17a67c6", "1519345182560-3f2917c472ef", "1509305713942-83601abc8f85",
-    "1529626455594-215017963df5", "1508214751196-bcfd4ca60f91", "1499952127939-9bbf5af6c51c", "1520813792240-56fc4a3765a7",
-    "1530577195663-f2796938bb91", "1515886657617-aa3ed8955a4f", "1491349171157-c9d5227d996a", "1463175059582-3813b89bb0b2",
-    "1525134479668-1bee5c7c6845", "1517070208541-250c20772747", "1524250502761-1ac6f2e30d43", "1514315384763-ba401779410f"
-];
-
 const categories = ["오피스", "캠퍼스", "카페", "운동", "힙스터", "청순", "성숙", "집순이", "강남미인", "일본여자"];
 const candidatePool = []; 
 
-// 100인 데이터 생성 (엄선된 포트레이트 ID 반복 활용)
+// 인물 사진 ID (검증된 고화질 포트레이트)
+const pIds = ["1534528741775-53994a69daeb", "1544005313-94ddf0286df2", "1506794778202-cad84cf45f1d", "1531746020798-e6953c6e8e04", "1524504388940-b1c1722653e1", "1517841905240-472988babdf9", "1438761681033-6461ffad8d80", "1494790108377-be9c29b29330", "1488426862026-3ee34a7d66df", "1539571696357-5a69c17a67c6"];
+
+// 데이터 사전 생성
 for(let i=0; i<100; i++) {
-    const portraitId = portraits[i % portraits.length];
-    const cat = categories[Math.floor(i / 10)];
     candidatePool.push({
         id: i,
-        name: `${cat} Style #${(i%10)+1}`,
-        category: cat,
-        img: `https://images.unsplash.com/photo-${portraitId}?w=600&h=900&fit=crop&q=80`,
-        tags: [cat]
+        name: `${categories[Math.floor(i/10)]} Style #${(i%10)+1}`,
+        category: categories[Math.floor(i/10)],
+        img: `https://images.unsplash.com/photo-${pIds[i%10]}?w=600&h=900&fit=crop&q=80`
     });
 }
 
@@ -105,12 +95,21 @@ let currentMatch = [];
 let historyStack = [];
 
 function startGame(name) {
-    currentPlayer = name;
-    document.getElementById('main-lobby').style.display = 'none';
-    document.getElementById('game-screen').style.display = 'block';
-    roundCandidates = candidatePool.sort(() => 0.5 - Math.random()).slice(0, 16);
-    historyStack = [];
-    setupMatch();
+    try {
+        currentPlayer = name;
+        document.getElementById('main-lobby').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'block';
+        
+        // 16명 셔플 후 추출
+        roundCandidates = [...candidatePool].sort(() => Math.random() - 0.5).slice(0, 16);
+        winners = [];
+        historyStack = [];
+        
+        setupMatch();
+    } catch(e) {
+        alert("게임 시작 중 오류가 발생했습니다. 다시 시도해 주세요!");
+        location.reload();
+    }
 }
 
 function setupMatch() {
@@ -118,17 +117,20 @@ function setupMatch() {
         saveAndShowResult(roundCandidates[0]);
         return;
     }
+    
     if (roundCandidates.length === 0 && winners.length > 0) {
         roundCandidates = [...winners];
         winners = [];
     }
+
     const titles = {16: "16강 진출전", 8: "8강 토너먼트", 4: "4강 (준결승)", 2: "🔥 파이널 결승전 🔥"};
     document.getElementById('round-title').innerText = titles[roundCandidates.length] || "매치 진행 중";
     document.getElementById('undo-btn').style.display = historyStack.length > 0 ? "inline-block" : "none";
 
     currentMatch = [roundCandidates[0], roundCandidates[1]];
-    document.getElementById('left-side').innerHTML = `<img src="${currentMatch[0].img}"><p style='font-size:1.2rem; margin-top:15px;'>${currentMatch[0].name}</p>`;
-    document.getElementById('right-side').innerHTML = `<img src="${currentMatch[1].img}"><p style='font-size:1.2rem; margin-top:15px;'>${currentMatch[1].name}</p>`;
+    
+    document.getElementById('left-side').innerHTML = `<img src="${currentMatch[0].img}"><p style='font-size:1.1rem; margin-top:10px;'>${currentMatch[0].name}</p>`;
+    document.getElementById('right-side').innerHTML = `<img src="${currentMatch[1].img}"><p style='font-size:1.1rem; margin-top:10px;'>${currentMatch[1].name}</p>`;
 }
 
 function selectWinner(index) {
@@ -139,14 +141,4 @@ function selectWinner(index) {
 }
 
 function undoSelection() {
-    if (historyStack.length === 0) return;
-    const lastState = historyStack.pop();
-    roundCandidates = lastState.roundCandidates;
-    winners = lastState.winners;
-    setupMatch();
-}
-
-function saveAndShowResult(winner) {
-    const history = JSON.parse(localStorage.getItem('wc_results_final_fixed_100') || '{}');
-    history[currentPlayer] = { ...winner, time: new Date().toLocaleString() };
-    localStorage.setItem('wc_results_final_fixed_100', JSON.stringify(
+    if (
