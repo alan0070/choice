@@ -4,51 +4,56 @@
     <meta charset="UTF-8">
     <title>3인 전용: 현실 밀착형 100인 월드컵</title>
     <style>
-        :root { --main-gold: #d4af37; --bg-dark: #1a1a1a; }
+        :root { --main-gold: #d4af37; --bg-dark: #121212; }
         body { background: var(--bg-dark); color: white; font-family: 'Pretendard', sans-serif; text-align: center; margin: 0; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
         
-        /* 메인 대시보드 */
-        .player-select { display: flex; justify-content: center; gap: 30px; margin-top: 50px; }
-        .player-card { cursor: pointer; transition: 0.3s; border: 2px solid transparent; padding: 10px; border-radius: 15px; }
-        .player-card:hover { transform: translateY(-10px); border-color: var(--main-gold); }
-        .player-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--main-gold); }
+        /* 플레이어 선택 */
+        .player-select { display: flex; justify-content: center; gap: 40px; margin-top: 50px; }
+        .player-card { cursor: pointer; transition: 0.4s; border: 2px solid transparent; padding: 15px; border-radius: 20px; background: #1e1e1e; width: 200px; }
+        .player-card:hover { transform: translateY(-15px); border-color: var(--main-gold); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3); }
+        .player-img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid var(--main-gold); margin-bottom: 15px; }
 
-        /* 월드컵 매치 화면 */
+        /* 월드컵 매치 */
         #game-screen { display: none; margin-top: 50px; }
-        .match-up { display: flex; justify-content: center; align-items: center; gap: 50px; }
-        .candidate { width: 400px; cursor: pointer; transition: 0.2s; position: relative; }
-        .candidate img { width: 100%; border-radius: 15px; border: 5px solid #333; }
-        .candidate:hover img { border-color: var(--main-gold); box-shadow: 0 0 20px var(--main-gold); }
-        .vs { font-size: 50px; font-weight: bold; color: var(--main-gold); }
+        .match-up { display: flex; justify-content: center; align-items: center; gap: 60px; margin-top: 30px; }
+        .candidate { width: 380px; cursor: pointer; transition: 0.3s; }
+        .candidate img { width: 100%; border-radius: 20px; border: 4px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .candidate:hover img { border-color: var(--main-gold); transform: scale(1.02); }
+        .vs { font-size: 60px; font-weight: 900; font-style: italic; color: var(--main-gold); text-shadow: 2px 2px 10px rgba(212, 175, 55, 0.5); }
 
-        /* 결과 화면 */
+        /* 결과 대시보드 */
         #result-screen { display: none; }
-        .result-board { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
-        .final-card { background: #2a2a2a; padding: 20px; border-radius: 15px; width: 300px; }
-        .ai-comment { font-size: 0.9rem; color: #aaa; margin-top: 15px; line-height: 1.5; background: #333; padding: 10px; border-radius: 8px; }
+        .result-board { display: flex; justify-content: center; gap: 25px; margin-top: 40px; flex-wrap: wrap; }
+        .final-card { background: #1e1e1e; padding: 25px; border-radius: 20px; width: 280px; border: 1px solid #333; }
+        .winner-img-final { width: 100%; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
+        .ai-comment { font-size: 0.95rem; color: #ddd; margin-top: 15px; line-height: 1.6; background: #2a2a2a; padding: 15px; border-radius: 12px; text-align: left; position: relative; }
+        .danang-score { margin-top: 10px; color: #00ffcc; font-weight: bold; font-size: 1.1rem; border-top: 1px solid #444; padding-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container" id="main-lobby">
-    <h1 style="color: var(--main-gold);">Secret Ideal World Cup</h1>
-    <p>플레이어를 선택하여 게임을 시작하세요.</p>
+    <h1 style="color: var(--main-gold); font-size: 2.5rem; letter-spacing: 2px;">Secret Ideal World Cup</h1>
+    <p style="color: #888;">플레이어를 선택하여 당신의 본능을 확인하세요.</p>
     <div class="player-select">
         <div class="player-card" onclick="startGame('태구')">
-            <img src="https://i.ibb.co/vzYpT8m/taegu.png" class="player-img"> <h2>태구</h2>
+            <img src="./taegu.png" class="player-img" onerror="this.src='https://via.placeholder.com/150?text=TG'">
+            <h2 style="margin:0;">태구</h2>
         </div>
         <div class="player-card" onclick="startGame('민')">
-            <img src="https://i.ibb.co/M7XzX7B/min.png" class="player-img"> <h2>민</h2>
+            <img src="./min.png" class="player-img" onerror="this.src='https://via.placeholder.com/150?text=MIN'">
+            <h2 style="margin:0;">민</h2>
         </div>
         <div class="player-card" onclick="startGame('충')">
-            <img src="https://i.ibb.co/mH0Q0Q0/choong.png" class="player-img"> <h2>충</h2>
+            <img src="./choong.png" class="player-img" onerror="this.src='https://via.placeholder.com/150?text=CH'">
+            <h2 style="margin:0;">충</h2>
         </div>
     </div>
 </div>
 
-<div id="game-screen">
-    <h2 id="round-title" style="color: var(--main-gold);">16강 진행 중</h2>
+<div id="game-screen" class="container">
+    <h2 id="round-title" style="color: var(--main-gold); font-size: 2rem;">라운드</h2>
     <div class="match-up">
         <div id="left-side" class="candidate" onclick="selectWinner(0)"></div>
         <div class="vs">VS</div>
@@ -56,25 +61,24 @@
     </div>
 </div>
 
-<div id="result-screen">
-    <h1 style="color: var(--main-gold);">오늘의 최종 초이스</h1>
+<div id="result-screen" class="container">
+    <h1 style="color: var(--main-gold);">Secret Dashboard</h1>
     <div id="dashboard-results" class="result-board"></div>
-    <button onclick="location.reload()" style="margin-top: 30px; padding: 15px 30px; cursor:pointer;">다시 하기</button>
+    <button onclick="location.reload()" style="margin-top: 40px; padding: 15px 40px; background: var(--main-gold); border:none; border-radius:30px; font-weight:bold; cursor:pointer;">다시 하기</button>
 </div>
 
 <script>
-// --- 데이터 및 상태 관리 ---
 const categories = ["오피스", "캠퍼스", "카페", "운동", "힙스터", "청순", "성숙", "집순이", "강남미인", "일본여자"];
 const candidatePool = []; 
 
-// 100명 후보 자동 생성 (임시 이미지 사용, 실제 이미지로 대체 가능)
+// 100명 후보 자동 생성 (임시 이미지는 테스트용, 나중에 본인의 AI 이미지 경로로 교체)
 categories.forEach(cat => {
     for(let i=1; i<=10; i++) {
         candidatePool.push({
-            name: `${cat} ${i}번`,
+            name: `${cat} Style #${i}`,
             category: cat,
-            img: `https://picsum.photos/seed/${cat}${i}/400/600`, // 실제 생성한 AI 이미지 URL로 교체
-            tags: [cat, i % 2 === 0 ? "안경" : "단발"]
+            img: `https://picsum.photos/seed/realvibe${cat}${i}/400/600`, 
+            tags: [cat, i % 2 === 0 ? "안경" : "긴머리"]
         });
     }
 });
@@ -84,13 +88,10 @@ let currentMatch = [];
 let winners = [];
 let roundCandidates = [];
 
-// --- 게임 로직 ---
 function startGame(name) {
     currentPlayer = name;
     document.getElementById('main-lobby').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
-    
-    // 100명 중 랜덤 16명 추출
     roundCandidates = candidatePool.sort(() => 0.5 - Math.random()).slice(0, 16);
     setupMatch();
 }
@@ -100,11 +101,8 @@ function setupMatch() {
         saveAndShowResult(roundCandidates[0]);
         return;
     }
-    
-    if (roundCandidates.length === 16) document.getElementById('round-title').innerText = "16강";
-    if (roundCandidates.length === 8) document.getElementById('round-title').innerText = "8강";
-    if (roundCandidates.length === 4) document.getElementById('round-title').innerText = "4강 (준결승)";
-    if (roundCandidates.length === 2) document.getElementById('round-title').innerText = "결승전";
+    const titles = {16: "16강", 8: "8강", 4: "4강", 2: "결승전"};
+    document.getElementById('round-title').innerText = titles[roundCandidates.length] || "진행 중";
 
     currentMatch = [roundCandidates[0], roundCandidates[1]];
     document.getElementById('left-side').innerHTML = `<img src="${currentMatch[0].img}"><p>${currentMatch[0].name}</p>`;
@@ -114,27 +112,21 @@ function setupMatch() {
 function selectWinner(index) {
     winners.push(currentMatch[index]);
     roundCandidates.splice(0, 2);
-    
-    if (roundCandidates.length === 0) {
-        roundCandidates = winners;
-        winners = [];
-    }
+    if (roundCandidates.length === 0) { roundCandidates = winners; winners = []; }
     setupMatch();
 }
 
-// --- 결과 저장 및 AI 코멘트 ---
 function saveAndShowResult(winner) {
-    const history = JSON.parse(localStorage.getItem('wc_results') || '{}');
+    const history = JSON.parse(localStorage.getItem('wc_results_v2') || '{}');
     history[currentPlayer] = { ...winner, time: new Date().toLocaleString() };
-    localStorage.setItem('wc_results', JSON.stringify(history));
-
+    localStorage.setItem('wc_results_v2', JSON.stringify(history));
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('result-screen').style.display = 'block';
     renderDashboard();
 }
 
 function renderDashboard() {
-    const history = JSON.parse(localStorage.getItem('wc_results') || '{}');
+    const history = JSON.parse(localStorage.getItem('wc_results_v2') || '{}');
     const board = document.getElementById('dashboard-results');
     board.innerHTML = "";
 
@@ -142,12 +134,15 @@ function renderDashboard() {
         const data = history[name];
         if (data) {
             const comment = getAIComment(name, data);
+            const score = Math.floor(Math.random() * 21) + 75; // 75~95점 사이 랜덤
             board.innerHTML += `
                 <div class="final-card">
-                    <h3>${name}의 픽</h3>
-                    <img src="${data.img}" style="width:100%; border-radius:10px;">
-                    <p><b>${data.name}</b></p>
-                    <div class="ai-comment">🤖 AI 분석: "${comment}"</div>
+                    <h3 style="color:var(--main-gold); margin-bottom:15px;">${name}의 최애</h3>
+                    <img src="${data.img}" class="winner-img-final">
+                    <p><b>${data.category} 스타일</b></p>
+                    <div class="ai-comment">🤖 <b>AI 분석:</b><br>${comment}
+                        <div class="danang-score">🌴 다낭 여행 동반 지수: ${score}%</div>
+                    </div>
                 </div>
             `;
         }
@@ -155,10 +150,14 @@ function renderDashboard() {
 }
 
 function getAIComment(name, data) {
-    if (data.category === "강남미인") return `${name}님은 화려하고 도시적인 세련된 미인을 선호하시네요! 눈이 아주 높으십니다. ✨`;
-    if (data.category === "일본여자") return `${name}님은 투명하고 아기자기한 감성을 최종 선택하셨네요! 유니크한 취향입니다. 🇯🇵`;
-    if (data.category === "오피스") return `${name}님은 스마트하고 지적인 스타일을 선호하시네요. 특히 '안경' 쓴 지적인 모습에 반응하신 듯! 👓`;
-    return `${name}님은 ${data.category} 스타일을 선호하시는군요! 확고한 취향이 느껴집니다. 👍`;
+    const comments = {
+        "강남미인": "세련되고 화려한 도시적 매력에 압도당하셨군요. 눈이 아주 높으신 편!",
+        "일본여자": "투명하고 아기자기한 일본 특유의 감성을 선호하시네요. 섬세한 취향의 소유자!",
+        "오피스": "지적이고 스마트한 커리어우먼 스타일을 고르셨네요. 안경 쓴 모습에 약하신 건 아닌지?",
+        "청순": "보호본능을 자극하는 첫사랑 이미지에 마음을 뺏기셨네요. 순수한 스타일을 선호하시군요.",
+        "운동": "건강미 넘치는 액티브한 스타일에 반응하셨습니다! 함께 운동하는 데이트를 꿈꾸시나요?"
+    };
+    return comments[data.category] || `${data.category} 스타일 특유의 매력을 정확히 짚어내셨네요. 본인만의 주관이 뚜렷하십니다!`;
 }
 </script>
 </body>
